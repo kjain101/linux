@@ -83,12 +83,12 @@ check()
 	# in case of pe-file.exe file
 	echo $1 | grep ".exe"
 	if [ $? -eq 0 ]; then
-		if [ -x $1  -a ! -x $file ]; then
+		if [ -x $1 ] && [ ! -x $file ]; then
 			echo "failed: file ${file} executable does not exist"
 			exit 1
 		fi
 
-		if [ ! -x $file -a ! -e $file ]; then
+		if [ ! -x $file ] && [ ! -e $file ]; then
 			echo "failed: file ${file} does not exist"
 			exit 1
 		fi
@@ -135,11 +135,10 @@ test_record()
 	log_out=$(mktemp /tmp/perf.log.out.XXX)
 	log_err=$(mktemp /tmp/perf.log.err.XXX)
 	perf="perf --buildid-dir ${build_id_dir}"
-
-	echo "running: perf record $@"
-	${perf} record --buildid-all -o ${data} $@ 1>${log_out} 2>${log_err}
+	echo "running: perf record $*"
+	${perf} record --buildid-all -o ${data} "$@" 1>${log_out} 2>${log_err}
 	if [ $? -ne 0 ]; then
-		echo "failed: record $@"
+		echo "failed: record $*"
 		echo "see log: ${log_err}"
 		exit 1
 	fi
@@ -171,5 +170,5 @@ rm ${ex_sha1} ${ex_md5}
 if [ ${run_pe} -eq 1 ]; then
 	rm -r ${wineprefix}
 fi
-
+err=$?
 exit ${err}
