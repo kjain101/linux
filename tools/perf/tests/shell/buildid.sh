@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 # skip if there's no readelf
+err=0
 if ! [ -x "$(command -v readelf)" ]; then
 	echo "failed: no readelf, install binutils"
 	exit 2
